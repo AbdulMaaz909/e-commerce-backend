@@ -2,7 +2,11 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import connectDB from "./src/config/db.js";
-import userRoutes from "./src/routes/userRoutes.js";
+import authRoutes from "./src/routes/authRoutes.js";
+import cartRoutes from "./src/routes/cartRoutes.js"
+import couponRoutes from "./src/routes/couponRoutes.js";
+import orderRoutes from "./src/routes/orderRoutes.js";
+import adminRoutes from "./src/routes/adminRoutes.js";
 
 dotenv.config();
 
@@ -13,9 +17,21 @@ app.use(cors());
 
 connectDB();
 
-app.use("/api/user", userRoutes);
+//auth Routes
+app.use("/api", authRoutes);
+//Cart Routes
+app.use("/api",cartRoutes);
 
-const PORT = process.env.PORT || 5000;
+//Coupon Routes
+app.use("/api",couponRoutes)
+
+// order Routes
+app.use("/api",orderRoutes);
+
+//admin routes
+app.use("/api",adminRoutes)
+
+const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
   console.log("Server running on port", PORT);
