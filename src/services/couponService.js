@@ -11,7 +11,7 @@ export const validateAndCalculateDiscount = (
     const itemTotal = Number(item.price_at_addition) * Number(item.quantity);
     subtotal += itemTotal;
 
-    const catId = item.category_id;
+    const catId = Number(item.category_id); 
     categoryTotals[catId] = (categoryTotals[catId] || 0) + itemTotal;
   });
 
@@ -22,36 +22,23 @@ export const validateAndCalculateDiscount = (
     case "CART_TOTAL":
       if (subtotal < coupon.min_requirement) {
         throw new Error(
-          `Minimum spend of ₹${coupon.min_requirement} required for this coupon.`
+          `Spend of ₹${coupon.min_requirement} to use ${coupon.code}.`
         );
       }
       discountAmount = calculateValue(subtotal, coupon);
       break;
 
+      // For DRINK200: coupon.category_id in DB must be 2
     case "CATEGORY_BASED":
       const relevantTotal = categoryTotals[coupon.category_id] || 0;
       if (relevantTotal < coupon.min_requirement) {
         throw new Error(
-          `Minimum spend of ₹${coupon.min_requirement} in ${coupon.category_name} required.`
+          `Spend of ₹${coupon.min_requirement} on eligible item to use  ${coupon.code}.`
         );
       }
       discountAmount = calculateValue(relevantTotal, coupon);
       break;
 
-    case "PRODUCT_SPECIFIC":
-      const productInCart = cartItems.find(
-        (item) => item.product_id === coupon.product_id
-      );
-      if (!productInCart) {
-        throw new Error(
-          "This coupon is only for a specific product not in your cart."
-        );
-      }
-      discountAmount = calculateValue(
-        Number(productInCart.price_at_addition),
-        coupon
-      );
-      break;
 
     case "FIRST_TIME_USER":
       if (userOrderCount > 0) {

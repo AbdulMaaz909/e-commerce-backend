@@ -7,6 +7,7 @@ import cartRoutes from "./src/routes/cartRoutes.js"
 import couponRoutes from "./src/routes/couponRoutes.js";
 import orderRoutes from "./src/routes/orderRoutes.js";
 import adminRoutes from "./src/routes/adminRoutes.js";
+import productRoutes from "./src/routes/productRoutes.js"
 
 dotenv.config();
 
@@ -30,6 +31,9 @@ app.use("/api",orderRoutes);
 
 //admin routes
 app.use("/api",adminRoutes)
+
+//get products
+app.use("/api",productRoutes)
 
 const PORT = process.env.PORT || 8080;
 

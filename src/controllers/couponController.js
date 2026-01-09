@@ -11,7 +11,15 @@ const applyCouponToCart = async (req, res) => {
         const db = await connectDB();
 
         // 1. Get Coupon Details
-        const [coupons] = await db.execute("SELECT * FROM coupons WHERE code = ?", [couponCode]);
+        const [coupons] = await db.execute(`SELECT 
+        ci.*, 
+        p.category_id, 
+        p.price as price_at_addition 
+    FROM cart_items ci 
+    JOIN products p ON ci.product_id = p.id 
+    WHERE ci.user_id = ?`, 
+    [userId]
+);
         if (coupons.length === 0) return res.status(404).json({ message: "Coupon not found" });
         const coupon = coupons[0];
 
